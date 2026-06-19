@@ -24,6 +24,9 @@ resource "aws_apigatewayv2_route" "rota_consulta" {
   api_id    = aws_apigatewayv2_api.api_consulta.id
   route_key = "GET /sinistros/{id_sinistro}"
   target    = "integrations/${aws_apigatewayv2_integration.integration_lambda.id}"
+  
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
 }
 
 # Permissionamento para a API invocar a Lambda
