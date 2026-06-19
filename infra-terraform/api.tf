@@ -2,7 +2,7 @@
 # CAMADA DE CONSULTA (API GATEWAY)
 # ==========================================
 resource "aws_apigatewayv2_api" "api_consulta" {
-  name          = "docusmart-api-consulta-${var.nome_grupo}"
+  name          = "tria-api-consulta-${var.nome_grupo}"
   protocol_type = "HTTP"
 }
 
@@ -40,7 +40,7 @@ resource "aws_lambda_permission" "api_gw_permission" {
 # ==========================================
 resource "aws_lambda_function" "lambda_consulta" {
   filename      = "lambda_consulta.zip"
-  function_name = "docusmart-lambda-consulta-${var.nome_grupo}"
+  function_name = "tria-lambda-consulta-${var.nome_grupo}"
   role          = aws_iam_role.lambda_consulta_role.arn
   handler       = "index.handler"
   runtime       = "python3.10"

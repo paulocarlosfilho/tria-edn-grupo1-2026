@@ -15,8 +15,8 @@ provider "aws" {
     tags = {
       "Hackathon"     = "EdN-Jun-Grupo1-Tria-2026"
       "Grupo"         = var.nome_grupo
-      "Projeto"       = var.nome_projeto
-      "Ambiente"      = "Production-Tria"
+      "Projeto"       = "Tria"
+      "Ambiente"      = "Production"
       "GerenciadoPor" = "Terraform"
     }
   }

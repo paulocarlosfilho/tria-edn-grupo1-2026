@@ -2,7 +2,7 @@
 # ARMAZENAMENTO (DOCUMENTOS BRUTOS)
 # ==========================================
 resource "aws_s3_bucket" "bucket_documentos" {
-  bucket        = "docusmart-documentos-brutos-${var.nome_grupo}"
+  bucket        = "tria-documentos-brutos-${var.nome_grupo}"
   force_destroy = true
 }
 
@@ -15,7 +15,7 @@ resource "aws_s3_bucket_notification" "s3_to_eventbridge" {
 # EVENTOS & ROTEAMENTO (EVENTBRIDGE)
 # ==========================================
 resource "aws_cloudwatch_event_rule" "event_upload" {
-  name        = "docusmart-upload-rule-${var.nome_grupo}"
+  name        = "tria-upload-rule-${var.nome_grupo}"
   event_pattern = jsonencode({
     source      = ["aws.s3"],
     detail-type = ["Object Created"],
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_event_target" "target_to_sqs" {
 # FILA DE PROCESSAMENTO (SQS)
 # ==========================================
 resource "aws_sqs_queue" "fila_processamento" {
-  name                      = "docusmart-fila-processamento-${var.nome_grupo}"
+  name                      = "tria-fila-processamento-${var.nome_grupo}"
   receive_wait_time_seconds = 20
 }
 
@@ -60,7 +60,7 @@ resource "aws_sqs_queue_policy" "sqs_policy" {
 # ==========================================
 resource "aws_lambda_function" "lambda_orquestracao" {
   filename      = "lambda_function.zip"
-  function_name = "docusmart-lambda-orquestracao-${var.nome_grupo}"
+  function_name = "tria-lambda-orquestracao-${var.nome_grupo}"
   role          = aws_iam_role.lambda_role.arn
   handler       = "index.handler"
   runtime       = "python3.10"
@@ -84,7 +84,7 @@ resource "aws_lambda_event_source_mapping" "sqs_trigger" {
 # BANCO DE DADOS (DADOS ESTRUTURADOS)
 # ==========================================
 resource "aws_dynamodb_table" "tabela_dados_estruturados" {
-  name         = "docusmart-dados-estruturados-${var.nome_grupo}"
+  name         = "tria-dados-estruturados-${var.nome_grupo}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id_sinistro"
 
@@ -98,5 +98,5 @@ resource "aws_dynamodb_table" "tabela_dados_estruturados" {
 # CANAIS DE ALERTAS & NOTIFICAÇÕES (SNS)
 # ==========================================
 resource "aws_sns_topic" "alertas_operacoes" {
-  name = "docusmart-alertas-notificacoes-${var.nome_grupo}"
+  name = "tria-alertas-notificacoes-${var.nome_grupo}"
 }
