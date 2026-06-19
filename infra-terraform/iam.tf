@@ -6,6 +6,15 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+# Role da Lambda de Consulta
+resource "aws_iam_role" "lambda_consulta_role" {
+  name = "docusmart-lambda-consulta-role-${var.nome_grupo}"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-19"
+    Statement = [{ Action = "sts:AssumeRole", Effect = "Allow", Principal = { Service = "lambda.amazonaws.com" } }]
+  })
+}
+
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "docusmart-lambda-extended-policy-${var.nome_grupo}"
   role = aws_iam_role.lambda_role.id
@@ -18,6 +27,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
       { Effect = "Allow", Action = ["dynamodb:PutItem", "dynamodb:GetItem"], Resource = aws_dynamodb_table.tabela_dados_estruturados.arn },
       { Effect = "Allow", Action = ["sns:Publish"], Resource = aws_sns_topic.alertas_operacoes.arn },
       { Effect = "Allow", Action = ["textract:*", "bedrock:InvokeModel"], Resource = "*" }
+      { Effect = "Allow", Action = ["dynamodb:GetItem"], Resource = aws_dynamodb_table.tabela_dados_estruturados.arn }
     ]
   })
 }
