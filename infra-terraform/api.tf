@@ -2,7 +2,7 @@
 # CAMADA DE CONSULTA (API GATEWAY)
 # ==========================================
 resource "aws_apigatewayv2_api" "api_consulta" {
-  name          = "docusmart-api-consulta-${var.nome_grupo}"
+  name          = "tria-api-consulta-${var.nome_grupo}"
   protocol_type = "HTTP"
 }
 
@@ -24,6 +24,9 @@ resource "aws_apigatewayv2_route" "rota_consulta" {
   api_id    = aws_apigatewayv2_api.api_consulta.id
   route_key = "GET /sinistros/{id_sinistro}"
   target    = "integrations/${aws_apigatewayv2_integration.integration_lambda.id}"
+
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
 }
 
 # Permissionamento para a API invocar a Lambda
@@ -40,7 +43,7 @@ resource "aws_lambda_permission" "api_gw_permission" {
 # ==========================================
 resource "aws_lambda_function" "lambda_consulta" {
   filename      = "lambda_consulta.zip"
-  function_name = "docusmart-lambda-consulta-${var.nome_grupo}"
+  function_name = "tria-lambda-consulta-${var.nome_grupo}"
   role          = aws_iam_role.lambda_consulta_role.arn
   handler       = "index.handler"
   runtime       = "python3.10"
