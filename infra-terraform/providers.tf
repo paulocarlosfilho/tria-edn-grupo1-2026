@@ -13,10 +13,10 @@ provider "aws" {
   # Política de tags obrigatórias cobrada pela Anabel
   default_tags {
     tags = {
-      "Hackathon"     = "EdN-Jun-2026"
+      "Hackathon"     = "EdN-Jun-Grupo1-Tria-2026"
       "Grupo"         = var.nome_grupo
       "Projeto"       = var.nome_projeto
-      "Ambiente"      = "Production-ClaimsHub"
+      "Ambiente"      = "Production-Tria"
       "GerenciadoPor" = "Terraform"
     }
   }
