@@ -9,14 +9,17 @@ function App() {
   const [sinistroId, setSinistroId] = useState('');
   const [resultado, setResultado] = useState('');
   const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleConsulta = async (e) => {
     e.preventDefault();
     setResultado('');
     setErro('');
+    setLoading(true);
 
     if (!sinistroId) {
       setErro('Por favor, insira um ID de sinistro.');
+      setLoading(false);
       return;
     }
 
@@ -45,27 +48,46 @@ function App() {
   };
 
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-      <h1>Portal de Consulta Tria</h1>
-      <hr />
-      <h2>Consultar Sinistro</h2>
-      <form onSubmit={handleConsulta}>
-        <input
-          type="text"
-          value={sinistroId}
-          onChange={(e) => setSinistroId(e.target.value)}
-          placeholder="ID do Sinistro"
-          style={{ padding: '8px', width: '300px', marginRight: '10px' }}
-        />
-        <button type="submit" style={{ padding: '8px 12px' }}>Consultar</button>
-      </form>
+    <div className="container mt-5">
+      <div className="card shadow">
+        <div className="card-header bg-primary text-white">
+          <h1 className="text-center mb-0">Portal de Consulta Tria</h1>
+        </div>
+        <div className="card-body">
+          <h2 className="card-title">Consultar Sinistro</h2>
+          <form onSubmit={handleConsulta}>
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control form-control-lg"
+                value={sinistroId}
+                onChange={(e) => setSinistroId(e.target.value)}
+                placeholder="Digite o ID do Sinistro"
+                disabled={loading}
+              />
+            </div>
+            <div className="d-grid">
+              <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span className="visually-hidden">Loading...</span> Consultando...
+                  </>
+                ) : 'Consultar'}
+              </button>
+            </div>
+          </form>
 
-      {erro && <pre style={{ color: 'red', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{erro}</pre>}
-      
-      <h3>Resultado:</h3>
-      <pre style={{ backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-        {resultado || 'Aguardando consulta...'}
-      </pre>
+          {erro && <div className="alert alert-danger mt-4">{erro}</div>}
+          
+          <h3 className="mt-4">Resultado:</h3>
+          <pre className="bg-dark text-white p-3 rounded">
+            <code>
+              {resultado || 'Aguardando consulta...'}
+            </code>
+          </pre>
+        </div>
+      </div>
     </div>
   );
 }
