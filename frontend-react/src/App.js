@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Amplify, API } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import { get } from 'aws-amplify/api'; // MUDANÇA 1: Importa a função 'get' diretamente
 import config from './aws-exports';
-
-// Removi as importações do 'withAuthenticator' e do CSS dele.
 
 Amplify.configure(config);
 
-// A função agora é só 'App', sem precisar de 'signOut' ou 'user'.
 function App() {
   const [sinistroId, setSinistroId] = useState('');
   const [resultado, setResultado] = useState('');
@@ -24,16 +22,25 @@ function App() {
 
     try {
       const apiName = 'TriaAPI';
-      const path = `/sinistros/${sinistroId}`; // Ajuste o path se sua API for diferente
+      const path = `/sinistros/${sinistroId}`;
       
-      // A chamada agora é mais simples, sem precisar de autenticação.
-      const response = await API.get(apiName, path, {});
-      setResultado(JSON.stringify(response, null, 2));
+      // MUDANÇA 2: A forma de chamar a API mudou para o padrão da v6
+      const restOperation = get({
+        apiName: apiName,
+        path: path
+      });
+
+      const { body } = await restOperation.response;
+      const responseData = await body.json(); // O corpo da resposta agora precisa ser lido como JSON
+
+      setResultado(JSON.stringify(responseData, null, 2));
 
     } catch (error) {
       console.error('Erro ao consultar API:', error);
       setErro('Falha ao consultar o sinistro. Verifique o ID e tente novamente. (Veja o console para mais detalhes)');
-      setResultado(JSON.stringify(error.response, null, 2));
+      // A resposta de erro também pode vir de forma diferente
+      const errorBody = await error.response?.body.json();
+      setResultado(JSON.stringify(errorBody || error.response, null, 2));
     }
   };
 
@@ -63,5 +70,4 @@ function App() {
   );
 }
 
-// Removi o 'withAuthenticator' que criava a tela de login.
 export default App;
