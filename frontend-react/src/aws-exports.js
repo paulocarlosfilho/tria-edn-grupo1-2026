@@ -8,7 +8,7 @@ const awsmobile = {
             "name": "TriaAPI",
             // Se você criar a API manualmente, cole a URL de invocação aqui.
             // Ex: "https://xxxx.execute-api.us-east-1.amazonaws.com/prod"
-            "endpoint": "COLE_A_URL_DA_SUA_API_GATEWAY_AQUI",
+            "endpoint": "https://k7ffb6nfgb.execute-api.us-east-1.amazonaws.com/prod",
         }
     ]
 };
