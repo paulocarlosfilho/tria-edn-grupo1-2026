@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 function App() {
+  document.title = "Trai";
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState('Aguardando envio de laudo...');
   const [loading, setLoading] = useState(false);
@@ -38,8 +39,8 @@ function App() {
         <div className="flex items-center gap-3">
           <div className="bg-amber-500 text-slate-950 p-2 rounded-lg font-black text-xl tracking-wider">DS</div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">DocuSmart AI</h1>
-            <p className="text-xs text-slate-400">Claims Hub • Grupo 1</p>
+            <h1 className="text-xl font-bold tracking-tight text-white">Trai</h1>
+            <p className="text-xs text-slate-400">EDN • Trai • Grupo 1 • 2026</p>
           </div>
         </div>
         <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-semibold">
