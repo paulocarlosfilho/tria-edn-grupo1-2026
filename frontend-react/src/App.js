@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Amplify, API } from 'aws-amplify';
-import { withAuthenticator } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
-
 import config from './aws-exports';
+
+// Removi as importações do 'withAuthenticator' e do CSS dele.
+
 Amplify.configure(config);
 
-function App({ signOut, user }) {
+// A função agora é só 'App', sem precisar de 'signOut' ou 'user'.
+function App() {
   const [sinistroId, setSinistroId] = useState('');
   const [resultado, setResultado] = useState('');
   const [erro, setErro] = useState('');
@@ -25,7 +26,7 @@ function App({ signOut, user }) {
       const apiName = 'TriaAPI';
       const path = `/sinistros/${sinistroId}`; // Ajuste o path se sua API for diferente
       
-      // A configuração em aws-exports.js já cuida da autorização
+      // A chamada agora é mais simples, sem precisar de autenticação.
       const response = await API.get(apiName, path, {});
       setResultado(JSON.stringify(response, null, 2));
 
@@ -39,10 +40,6 @@ function App({ signOut, user }) {
   return (
     <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '600px', margin: 'auto' }}>
       <h1>Portal de Consulta Tria</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p>Olá, {user.attributes.email}!</p>
-        <button onClick={signOut} style={{ padding: '8px 12px' }}>Sair</button>
-      </div>
       <hr />
       <h2>Consultar Sinistro</h2>
       <form onSubmit={handleConsulta}>
@@ -66,4 +63,5 @@ function App({ signOut, user }) {
   );
 }
 
-export default withAuthenticator(App);
+// Removi o 'withAuthenticator' que criava a tela de login.
+export default App;
