@@ -21,14 +21,49 @@ function App() {
     }
 
     setLoading(true);
-    setStatus('Iniciando upload para o Amazon S3...');
+    setStatus('Convertendo arquivo e iniciando comunicação com AWS...');
 
-    // Simulando o gatilho de upload para o S3 Buckets de Ingestão
-    setTimeout(() => {
+    const reader = new FileReader();
+    
+    // Converte o arquivo para Base64
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      try {
+        // Limpa o cabeçalho do Base64 para enviar apenas os dados binários limpos
+        const base64Clean = reader.result.split(',')[1];
+        
+        // Sua URL real de produção do API Gateway
+        const URL_API_GATEWAY = "https://zy6z9kh2sb.execute-api.us-east-1.amazonaws.com/prod/sinistros";
+
+        const response = await fetch(URL_API_GATEWAY, {
+          method: "POST",
+          headers: {
+            "Content-Type": file.type, // Passa application/pdf de forma dinâmica
+          },
+          body: base64Clean,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setFile(null);
+          setStatus('✅ Upload concluído! O EventBridge já acionou o processamento via IA (Textract + Bedrock).');
+        } else {
+          setStatus(`❌ Erro no processamento: ${data.error || 'Erro desconhecido'}`);
+          console.error("Detalhes do erro do servidor:", data);
+        }
+      } catch (error) {
+        setStatus('❌ Erro crítico ao conectar com a API Gateway da AWS.');
+        console.error("Erro de conexão/Rede:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    reader.onerror = () => {
+      setStatus('❌ Erro ao ler o arquivo localmente.');
       setLoading(false);
-      setStatus('✅ Upload concluído! O EventBridge já acionou o processamento via IA (Textract + Bedrock).');
-      setFile(null);
-    }, 2500);
+    };
   };
 
   return (
@@ -84,6 +119,8 @@ function App() {
             <div className={`p-4 rounded-xl border text-sm font-medium transition-all ${
               status.includes('✅') 
                 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                : status.includes('❌')
+                ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
                 : 'bg-slate-900 border-slate-800 text-slate-300'
             }`}>
               <div className="flex items-center gap-2">
